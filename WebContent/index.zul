@@ -7,9 +7,6 @@
 			value="@bind(view.inputText)" multiline="true"
 			constraint="no empty: please enter nucleotide sequence" />
 		<button label="go" />
-		<listbox id="orfListBox" model="@load(view.list)" emptyMessage="No ORF found in sequence"
-			height="auto" width="auto" visible="false">
-			
-		</listbox>
+		
 	</window>
 </zk>

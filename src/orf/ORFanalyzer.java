@@ -2,6 +2,7 @@ package orf;
 
 import java.util.ArrayList;
 
+
 public class ORFanalyzer {
 	private ArrayList<ORF> goodORFs;
 	private ArrayList<ORF> excludedORFs;
@@ -16,15 +17,16 @@ public class ORFanalyzer {
 		totalSequence = normalizeSeq(in);
 		startAnalysis();
 		findStartPositions();
-		printAllORFs();
+		
+		//printAllORFs();
 	}
 
 	private void findStartPositions() {
 		for (ORF orf : goodORFs) {
 			if (orf.getSense() == '+')
-				orf.addStartPos(totalSequence.indexOf(orf.getNuqSec()));
+				orf.addStartPos(totalSequence.indexOf(orf.getNucSequence()));
 			else
-				orf.addStartPos(antiSenseSequence.indexOf(orf.getNuqSec()));
+				orf.addStartPos(antiSenseSequence.indexOf(orf.getNucSequence()));
 		}
 	}
 
@@ -69,7 +71,7 @@ public class ORFanalyzer {
 					break;
 				}
 			}
-			if (orf.getSeqLen() >= minLength)
+			if (orf.getSeqLength() >= minLength)
 				goodORFs.add(orf);
 			else
 				excludedORFs.add(orf);

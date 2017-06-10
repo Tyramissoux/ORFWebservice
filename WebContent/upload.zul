@@ -1,0 +1,25 @@
+<?page title="ORFfinder Upload" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window title="ORFfinder Upload" border="normal"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('vm.UploadVM')">
+		<vbox>
+			<button label="Upload File" onUpload="@command('uploadFile')"
+				upload="true,multiple=false" />
+			<hbox>
+				<textbox id="txtUpload" multiline="true" hflex="max"
+					vflex="max">
+					<attribute name="onChanging">
+	btnGo.setVisible(event.getValue().length() > 30);
+</attribute>
+				</textbox>
+				<vbox>
+					<label value="Enter sequence:" />
+					<button label="Start" onClick="@command('start')"
+						id="btnGo" visible="false" />
+				</vbox>
+			</hbox>
+
+		</vbox>
+	</window>
+</zk>

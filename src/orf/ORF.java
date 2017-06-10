@@ -17,10 +17,17 @@ public class ORF {
 		this.sense = sense;
 
 	}
+	/*	<listcell label="@bind(orfs.startPos)" />
+						<listcell label="@bind(orfs.endPos)" />
+						<listcell label="@bind(orfs.frameNum)" />
+						<listcell label="@bind(orfs.sense)" />
+						<listcell label="@bind(orfs.seqLength)" />
+						<listcell label="@bind(orfs.nucSequence)" />
+						<listcell label="@bind(orfs.aaSequence)" />*/
 
 	protected void addStartPos(int pos){
 		startPos = pos;
-		addEndPos(pos +getSeqLen());
+		addEndPos(pos +getSeqLength());
 	}
 	
 	protected void addCodon(String in) {
@@ -32,6 +39,60 @@ public class ORF {
 		endPos = pos;
 	}
 	
+	
+	
+	
+	public int getStartPos(){
+		return startPos;
+	}
+	
+	public int getEndPos(){
+		return endPos;
+	}
+	
+	public char getSense(){
+		return sense;
+	}
+	
+	public int getSeqLength(){
+		return nucSeq.length();
+	}
+	
+	public int getAaLen(){
+		return aaSeq.length();
+	}
+	
+	public String getNucSequence(){
+		return nucSeq.toString();
+	}
+	
+	public String getAaSequence(){
+		return aaSeq.toString();
+	}
+	
+	/**
+	 * for testing purposes
+	 * @return
+	 */
+	protected StringBuilder getInfo(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(startPos);
+		sb.append("\t");
+		sb.append(endPos);
+		sb.append("\t");
+		sb.append(sense);
+		sb.append("\t");
+		sb.append(frame);
+		sb.append("\t");
+		sb.append(getSeqLength());
+		sb.append("\t");
+		sb.append(getAaLen());
+		sb.append("\t");
+		sb.append(nucSeq);
+		sb.append("\t");
+		sb.append(aaSeq);		
+		return sb;
+	}
 	/**
 	 * simple case switch that takes a triplet and translates it into one amino
 	 * acid
@@ -193,56 +254,6 @@ public class ORF {
 
 		return '?';
 	}
-	
-	
-	public int getStartPos(){
-		return startPos;
-	}
-	
-	public int getEndPos(){
-		return endPos;
-	}
-	
-	public char getSense(){
-		return sense;
-	}
-	
-	public int getSeqLen(){
-		return nucSeq.length();
-	}
-	
-	public int getAaLen(){
-		return aaSeq.length();
-	}
-	
-	public String getNuqSec(){
-		return nucSeq.toString();
-	}
-	
-	public String getAaSec(){
-		return aaSeq.toString();
-	}
-	
-	protected StringBuilder getInfo(){
-		StringBuilder sb = new StringBuilder();
-		sb.append(startPos);
-		sb.append("\t");
-		sb.append(endPos);
-		sb.append("\t");
-		sb.append(sense);
-		sb.append("\t");
-		sb.append(frame);
-		sb.append("\t");
-		sb.append(getSeqLen());
-		sb.append("\t");
-		sb.append(getAaLen());
-		sb.append("\t");
-		sb.append(nucSeq);
-		sb.append("\t");
-		sb.append(aaSeq);		
-		return sb;
-	}
-	
 	
 }
 
