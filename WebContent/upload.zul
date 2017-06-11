@@ -8,14 +8,20 @@
 				<hbox>
 					<label value="Choose file: " />
 					<space />
-					<button label="Upload"
+					<button label="Upload" id="btnUpload"
 						onUpload="@command('uploadFile')" upload="true,multiple=false" />
 				</hbox>
 				<hbox>
 					<textbox id="txtUpload" height="300" width="400"
 						multiline="true" hflex="max" vflex="max">
 						<attribute name="onChanging">
-	btnGo.setVisible(event.getValue().length() > 30);
+	if (event.getValue().length() > 30) {
+		btnGo.setVisible(true);
+		btnUpload.setVisible(false);
+	} else {
+		btnGo.setVisible(false);
+		btnUpload.setVisible(true);
+	}
 </attribute>
 					</textbox>
 					<vbox>
@@ -29,15 +35,17 @@
 			<vbox>
 				<hbox>
 					<label value="Min. nucleotide sequence length:" />
-					<selectbox model="@bind(vm.model)"
-						selectedIndex="0">
-						<template name="model">${each}</template>
+					<selectbox model="@bind(vm.model)" selectedIndex="0"
+						id="selBox">
+						<template name="model">
+							<label value="${each}" />
+						</template>
 					</selectbox>
 				</hbox>
 				<hbox>
 					<label value="Stopcodons:" />
 					<vbox>
-						<radiogroup>
+						<radiogroup id="rGroup">
 							<radio id="rEuca" label="eucaryotic: atg"
 								checked="true" />
 							<radio id="rProca"

@@ -1,12 +1,12 @@
-package vm;
+package vm.helper;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import orf.Entry;
+import security.ExceptionLogger;
 
 public class FastaReader {
 	
@@ -46,13 +46,13 @@ public class FastaReader {
 			br.close();
 			br = null;
 		} catch (FileNotFoundException e) {
-			
+			ExceptionLogger.writeSevereError(e);
 		} catch (IOException e) {
-			
+			ExceptionLogger.writeSevereError(e);
 		}
 	}
 
-	protected ArrayList<Entry> getEntryList() {
+	public ArrayList<Entry> getEntryList() {
 		return list;
 	}
 

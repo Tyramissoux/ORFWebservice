@@ -17,13 +17,15 @@ public class ORF {
 		this.sense = sense;
 
 	}
-	/*	<listcell label="@bind(orfs.startPos)" />
-						<listcell label="@bind(orfs.endPos)" />
-						<listcell label="@bind(orfs.frameNum)" />
-						<listcell label="@bind(orfs.sense)" />
-						<listcell label="@bind(orfs.seqLength)" />
-						<listcell label="@bind(orfs.nucSequence)" />
-						<listcell label="@bind(orfs.aaSequence)" />*/
+
+	public double calculateGCContent(){
+		String seq = getNucSequence();
+		int counter = 0;
+		for (int i = 0; i < seq.length(); i++) {
+			if(seq.charAt(i) == 'c' || seq.charAt(i)=='g')counter++;
+		}
+		return ((double)counter/(double)seq.length());
+	}
 
 	protected void addStartPos(int pos){
 		startPos = pos;
@@ -38,8 +40,6 @@ public class ORF {
 	private void addEndPos(int pos){
 		endPos = pos;
 	}
-	
-	
 	
 	
 	public int getStartPos(){

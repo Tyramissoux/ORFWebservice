@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -15,7 +16,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -24,12 +24,16 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Textbox;
-
 import orf.Entry;
+import security.ExceptionLogger;
+import vm.helper.FastaReader;
 
 public class UploadVM {
 
@@ -37,29 +41,38 @@ public class UploadVM {
 	private Textbox txt;
 	@Wire("#btnGo")
 	private Button btn;
-	
+	@Wire("#rEuca")
+	private Radio rEuca;
+	@Wire("#rProca")
+	private Radio rProca;
+	@Wire("#selBox")
+	private Selectbox select;
+
 	private ListModelList<String> model;
 
-	Pattern pattern;
-	Matcher matcher;
-	
-	public ListModelList<String> getModel(){
+	private Pattern pattern;
+	private Matcher matcher;
+
+
+	public ListModelList<String> getModel() {
 		return model;
 	}
-	
-	 public static List<String> getModelType() {return Arrays.asList(new String[]{"30", "75", "150", "300","600","900"});}
-	 
+
+	public static List<String> getModelType() {
+		return Arrays.asList(new String[] { "30", "75", "150", "300", "600",
+				"900" });
+	}
+
 	@Init
-	public void init(){
+	public void init() {
 		model = new ListModelList<String>(getModelType());
 	}
-	
-	
+
 	@SuppressWarnings("static-access")
 	@Command
 	public void start() {
 		pattern = pattern.compile("[atgcuryswkmbdhvn.-]+",
-				Pattern.CASE_INSENSITIVE); //ambiguity code included
+				Pattern.CASE_INSENSITIVE); // ambiguity code included
 		String text = txt.getValue();
 		if (text == null || text.length() == 0) {
 			Messagebox.show("No textbox input ", "Warning", Messagebox.OK,
@@ -74,21 +87,31 @@ public class UploadVM {
 			return;
 		}
 		Entry e = new Entry();
-		for (int i = 0; i < lines.length; i++) {
+		try {
+			for (int i = 0; i < lines.length; i++) {
 
-			pattern.matcher(lines[i]);
-			if (matcher.find()) {
-				e.setSequence(lines[i].toLowerCase());
-				continue;
+				pattern.matcher(lines[i]);
+				if (matcher.find()) {
+					e.setSequence(lines[i].toLowerCase());
+					continue;
+				}
+				if (lines[i].trim().startsWith(">")) {
+					e.setHeader(lines[i]);
+				}
 			}
-			if (lines[i].trim().startsWith(">")) {
-				e.setHeader(lines[i]);
+			if (e.getSequence().equals("")) {
+				Messagebox.show(
+						"No matching sequence found - try again, please",
+						"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+				return;
 			}
-		}
-		if(e.getSequence().equals("")){
-			Messagebox.show("No matching sequence found - try again, please", "Warning",
-					Messagebox.OK, Messagebox.EXCLAMATION);
-			return;
+			ArrayList<Entry> list = new ArrayList<Entry>();
+			list.add(e);
+			Sessions.getCurrent().setAttribute("listOfEntries", list);
+			getChosenValues();
+			redirect();
+		} catch (Exception ex) {
+			ExceptionLogger.writeSevereError(ex);
 		}
 
 	}
@@ -125,7 +148,6 @@ public class UploadVM {
 	}
 
 	@Command
-	@NotifyChange("fileuploaded")
 	public void uploadFile(
 			@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx)
 			throws IOException {
@@ -140,27 +162,52 @@ public class UploadVM {
 					Messagebox.EXCLAMATION);
 			return;
 		}
-
-		Media media = upEvent.getMedia();
-		String filePath = checkUploadedFile(media);
-		if (filePath == null)
-			return;
-
+		Clients.showBusy("Preparing data...");
 		try {
+
+			Media media = upEvent.getMedia();
+			String filePath = checkUploadedFile(media);
+			if (filePath == null)
+				return;
+
 			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 			Files.copy(writer, media.getReaderData());
 
-			Sessions.getCurrent().setAttribute("uploadedFilePath", filePath);
-
-			Messagebox.show("success", "Warning", Messagebox.OK,
-					Messagebox.EXCLAMATION);
-			// Executions.sendRedirect("customerChoice.zul");
-
+			ArrayList<Entry> list = new FastaReader(filePath).getEntryList();
+			Sessions.getCurrent().setAttribute("listOfEntries", list);
+			getChosenValues();
+			Clients.clearBusy();
+			redirect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ExceptionLogger.writeSevereError(e);
 			return;
 		}
+	}
 
+	private void redirect(){
+		Executions.sendRedirect("output.zul");
+	}
+	
+	private void getChosenValues() {
+		Sessions.getCurrent().setAttribute("multiStart", rEuca.isChecked());
+		int chosenLen = 0;
+		switch (select.getSelectedIndex()) {
+		case 0:
+			chosenLen = 30;
+		case 1:
+			chosenLen = 75;
+		case 2:
+			chosenLen = 150;
+		case 3:
+			chosenLen = 300;
+		case 4:
+			chosenLen = 600;
+		case 5:
+			chosenLen = 900;
+		default:
+			chosenLen = 30;
+		}
+		Sessions.getCurrent().setAttribute("minSeqLength", chosenLen);
 	}
 
 	private String checkUploadedFile(Media media) {
