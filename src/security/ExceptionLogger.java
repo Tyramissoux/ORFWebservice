@@ -10,7 +10,7 @@ public final class ExceptionLogger {
 
 	private static Logger logger;
 	private static Handler handler;
-	private static final String FILEPATH = "Files/exceptionlog.log";
+	private static final String FILEPATH = "exceptionlog.txt";
 
 	public ExceptionLogger() throws Exception {
 		logger = Logger.getLogger(Thread.currentThread().getStackTrace()[0]

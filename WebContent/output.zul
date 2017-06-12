@@ -15,7 +15,7 @@
 				</template>
 			</selectbox>
 			<button id="btnGo" label="switch" onClick="@command('switchEntry')"/>
-			<button id="diagrams" label="Show diagrams" onClick="@command('showDiag')"
+			<button id="diagrams" label="Show diagrams" onClick="@command('showDiags')"/>
 			</hbox>
 			<label value="@load(vm.header)" />
 		</vbox>

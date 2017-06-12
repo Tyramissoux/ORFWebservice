@@ -166,8 +166,8 @@ public class UploadVM {
 			if (filePath == null)
 				return;
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-			Files.copy(writer, media.getReaderData());
+			//BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+			Files.copy(new File(filePath),media.getStreamData());
 
 			list = new FastaReader(filePath).getEntryList();
 			setListGlobal();
@@ -175,6 +175,7 @@ public class UploadVM {
 			Clients.clearBusy();
 			redirect();
 		} catch (Exception e) {
+			Clients.clearBusy();
 			Messagebox.show("Uploaded file is not a textfile",
 					"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			ExceptionLogger.writeSevereError(e);
@@ -235,11 +236,12 @@ public class UploadVM {
 		String filePath = saveFolder.getAbsolutePath() + File.separatorChar
 				+ originalName;
 
-		if (media.isBinary()) {
+		/*if (media.isBinary()) {
+			Clients.clearBusy();
 			Messagebox.show("Chosen file is not a text based FASTA file",
 					"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			return null;
-		}
+		}*/
 		return filePath;
 	}
 

@@ -10,6 +10,7 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -34,12 +35,14 @@ public class OutputVM {
 	private ListModelList<String> model;
 	private String header;
 	private int selected;
+	private Entry currentEntry;
 
 	public OutputVM() {
 		getSessionGlobals();
 		fillSelectBox();
 		// if(allEntries.size()==1)select.setVisible(false);
 		entryToOrfList(0);
+		currentEntry = allEntries.get(0);
 		if (orfs.size() == 0) {
 			orfs.add(new ORF(0, '0'));
 			Messagebox.show("No ORFs were found for '" + header
@@ -58,6 +61,7 @@ public class OutputVM {
 	public void switchEntry() {
 		Clients.showBusy("Preparing data...");
 		int index = select.getSelectedIndex();
+		currentEntry = allEntries.get(index);
 		entryToOrfList(index);
 		setHeader();
 		BindUtils.postNotifyChange(null, null, OutputVM.this, "orfs");
@@ -98,6 +102,14 @@ public class OutputVM {
 		}
 	}
 
+	@Command
+	public void showDiags(){
+		Sessions.getCurrent().setAttribute("orfList", orfs);
+		Sessions.getCurrent().setAttribute("entry", currentEntry);
+		Executions.getCurrent().sendRedirect("DiaColumnRange.zul");
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	private void getSessionGlobals() {
 		allEntries = (ArrayList<Entry>) Sessions.getCurrent().getAttribute(

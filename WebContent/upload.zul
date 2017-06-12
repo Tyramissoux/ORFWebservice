@@ -2,62 +2,112 @@
 <zk>
 	<window title="ORFfinder Upload" border="normal"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('vm.UploadVM')">
+		viewModel="@id('vm') @init('vm.UploadVM')" vflex="max" sizable="true"
+		hflex="max" position="center">
 		<hbox>
-			<vbox>
-				<hbox>
-					<label id="lbl" value="Choose file: " />
-					<space />
-					<button label="Upload" id="btnUpload"
-						onUpload="@command('uploadFile')" upload="true,multiple=false" />
-				</hbox>
-				<hbox>
-				<vbox>
-						<label value="Enter sequence:" />
-					<textbox id="txtUpload" height="300px" width="400px"
-						multiline="true"  >
-						<attribute name="onChanging">
+			<hbox>
+				<label value="Enter sequence:" />
+				<textbox id="txtUpload" height="300px" width="400px"
+					multiline="true"
+					tooltiptext="Enter a nucleotide sequence of min. length 30 nt ">
+					<attribute name="onChanging">
 	if (event.getValue().length() > 30) {
 		btnGo.setVisible(true);
 		btnUpload.setVisible(false);
 		lbl.setVisible(false);
-		
+
 	} else {
 		btnGo.setVisible(false);
 		btnUpload.setVisible(true);
 		lbl.setVisible(true);
 	}
 </attribute>
-					</textbox>
-					</vbox>
-					<button label="Start"
-							onClick="@command('start')" id="btnGo" visible="false" />
-				</hbox>
+				</textbox>
+				<vbox>
+					<button label="Start" onClick="@command('start')"
+						id="btnGo" visible="false" />
+					<image id="questionmark"
+						src="Files/QuestionmarkButton.png" tooltip="upload"
+						style="cursor: help" />
+				</vbox>
+			</hbox>
 
-			</vbox>
-			<vbox>
+			<div align="center">
 				<hbox>
 					<label value="Min. nucleotide sequence length:" />
-					<selectbox model="@bind(vm.model)" 
-						id="selBox">
-						<template name="model">
-							<label value="${each}" />
-						</template>
-					</selectbox>
+					<image id="questionmark2"
+						src="Files/QuestionmarkButton.png" tooltip="select"
+						style="cursor: help" />
 				</hbox>
-				<hbox>
-					<label value="Stopcodons:" />
-					<vbox>
-						<radiogroup id="rGroup" orient="vertical">
-							<radio id="rEuca" label="eucaryotic: atg"
-								checked="true" />
-							<radio id="rProca"
-								label="procaryotic: atg, gtg, ttg" />
-						</radiogroup>
-					</vbox>
-				</hbox>
+				<selectbox model="@bind(vm.model)" id="selBox"
+					selectedIndex="0">
+					<template name="model">
+						<label value="${each}" />
+					</template>
+				</selectbox>
 
-			</vbox>
+
+				<vbox>
+					<label value="Stopcodons:" />
+					<radiogroup id="rGroup" orient="vertical">
+						<radio id="rEuca" label="eucaryotic:  atg"
+							checked="true" />
+						<radio id="rProca"
+							label="procaryotic: atg, gtg, ttg" />
+					</radiogroup>
+				</vbox>
+				<space height="20" />
+				<separator></separator>
+				<label id="lbl" value="Choose file: " />
+				<space height="50px" />
+				<button label="Upload" id="btnUpload"
+					onUpload="@command('uploadFile')"
+					upload="true,multiple=false,accept=.fa" />
+
+			</div>
 		</hbox>
 	</window>
+	<popup id="upload" width="300px">
+		<html>
+
+
+
+
+
+			
+			<![CDATA[ Paste either a FASTA nucleotide sequence or a pure
+			nucleotide sequence to this box. <br><br>Minimum length for
+			accepting a sequence is 30 nt.<br><br>Only one sequence is
+			allowed. Ambiguity code is accepted. ]]>
+			
+			
+			
+			
+			
+			
+		</html>
+	</popup>
+	<popup id="select" width="300px">
+		<html>
+
+
+
+
+
+			
+			<![CDATA[ Choose the minimum nucleotide length for detected
+			sequences to be displayed in the final output.<br><br>
+			Default length: 30 nt.<br><br><br>It is also possible to
+			select a different set of start codons below.
+			<br><br><br>Make sure to select the desired nucleotide
+			sequence length before uploading a file as the upload will
+			start immediately after finishing the upload dialog.]]>
+			
+			
+			
+			
+			
+			
+		</html>
+	</popup>
 </zk>
