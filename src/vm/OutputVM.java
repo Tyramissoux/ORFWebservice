@@ -7,6 +7,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Selectbox;
 
 import orf.Entry;
@@ -32,6 +33,11 @@ public class OutputVM {
 		fillSelectBox();
 		//if(allEntries.size()==1)select.setVisible(false);
 		entryToOrfList(0);
+		if(orfs.size()==0){
+			orfs.add(new ORF(0,'0'));
+			Messagebox.show("No ORFs were found for '"+header+"' with a min. sequence length of "+minSeqLen,
+					"Information", Messagebox.OK, Messagebox.EXCLAMATION);
+		}
 	}
 	
 	
@@ -69,7 +75,6 @@ public class OutputVM {
 		String currentEntry = allEntries.get(entryNum).getSequence();
 		orfs = new ORFanalyzer(currentEntry, minSeqLen, multipleStartCodons)
 				.getORFlist();
-		System.out.println();
 	}
 
 	@SuppressWarnings("unchecked")

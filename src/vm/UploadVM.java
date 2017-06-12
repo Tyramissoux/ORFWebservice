@@ -49,8 +49,6 @@ public class UploadVM {
 
 	private ListModelList<String> model;
 	private ArrayList<Entry> list;
-	
-
 
 	public ListModelList<String> getModel() {
 		return model;
@@ -66,7 +64,6 @@ public class UploadVM {
 		model = new ListModelList<String>(getModelType());
 	}
 
-	
 	@Command
 	public void start() {
 
@@ -86,7 +83,8 @@ public class UploadVM {
 		Entry e = new Entry();
 		try {
 			for (int i = 0; i < lines.length; i++) {
-				if (Pattern.matches("[atgcuryswkmbdhvn.-]+", lines[i].toLowerCase())) {
+				if (Pattern.matches("[atgcuryswkmbdhvn.-]+",
+						lines[i].toLowerCase())) {
 					e.setSequence(lines[i].toLowerCase());
 					continue;
 				}
@@ -94,7 +92,7 @@ public class UploadVM {
 					e.setHeader(lines[i]);
 				}
 			}
-			if (e.getSequence()==null || e.getSequence().equals("")) {
+			if (e.getSequence() == null || e.getSequence().equals("")) {
 				Messagebox.show(
 						"No nucleotide sequence found - try again, please",
 						"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
@@ -109,8 +107,8 @@ public class UploadVM {
 			ExceptionLogger.writeSevereError(ex);
 		}
 	}
-	
-	private void setListGlobal(){
+
+	private void setListGlobal() {
 		Sessions.getCurrent().setAttribute("listOfEntries", list);
 	}
 
@@ -182,28 +180,43 @@ public class UploadVM {
 		}
 	}
 
-	private void redirect(){
+	private void redirect() {
 		Executions.sendRedirect("output.zul");
 	}
-	
+
 	private void getChosenValues() {
 		Sessions.getCurrent().setAttribute("multiStart", !rEuca.isChecked());
 		int chosenLen = 0;
-		switch (select.getSelectedIndex()) {
-		case 0:
+		int index = select.getSelectedIndex();
+		switch (index) {
+		case 0: {
 			chosenLen = 30;
-		case 1:
+			break;
+		}
+		case 1: {
 			chosenLen = 75;
-		case 2:
+			break;
+		}
+		case 2: {
 			chosenLen = 150;
-		case 3:
+			break;
+		}
+		case 3: {
 			chosenLen = 300;
-		case 4:
+			break;
+		}
+		case 4: {
 			chosenLen = 600;
-		case 5:
+			break;
+		}
+		case 5: {
 			chosenLen = 900;
-		default:
+			break;
+		}
+		default: {
 			chosenLen = 30;
+			break;
+		}
 		}
 		Sessions.getCurrent().setAttribute("minSeqLength", chosenLen);
 	}

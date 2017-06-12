@@ -67,10 +67,12 @@ public class ORF {
 	}
 	
 	public String getNucSequence(){
+		if(nucSeq.length() == 0)return "0";
 		return nucSeq.toString();
 	}
 	
 	public String getAaSequence(){
+		if(aaSeq.length() == 0)return "0";
 		return aaSeq.toString();
 	}
 	

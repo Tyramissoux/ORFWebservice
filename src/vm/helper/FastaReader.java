@@ -13,6 +13,7 @@ public class FastaReader {
 	private ArrayList<Entry> list;
 	
 	public FastaReader(String input){
+		list = new ArrayList<Entry>();
 		readFile(input);
 	}
 	

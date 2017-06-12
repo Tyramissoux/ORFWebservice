@@ -43,7 +43,7 @@
 						<listcell label="@load(item.sense)" />
 						<listcell label="@load(item.seqLength)" />
 						<listcell label="@load(item.nucSequence)"  tooltiptext="@load(item.nucSequence)"/>
-						<listcell label="@load(item.aaSequence)"  tooltiptext="load(item.aaSequence)"/>
+						<listcell label="@load(item.aaSequence)"  tooltiptext="@load(item.aaSequence)"/>
 					</listitem>
 				</template>
 			</listbox>
