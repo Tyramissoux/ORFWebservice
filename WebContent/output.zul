@@ -6,7 +6,7 @@
 
 	<window id="win" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('vm.OutputVM')" border="normal">
-		<hox>
+		<hbox>
 			<selectbox model="@bind(vm.model)" selectedIndex="0"
 				id="selBox" onSelect="@Command('changeModel')">
 				<template name="model">
@@ -14,37 +14,36 @@
 				</template>
 			</selectbox>
 			<label value="@load(vm.header)" />
-		</hox>
+		</hbox>
 		<hbox>
-			<listbox model="@load(vm.orfs)" id="listbox"
-				selectedIndex="@bind(vm.selected)" hflex="true" height="300px"
-				checkmark="true" style="width: 100%;">
+			<listbox model="@load(vm.orfs)" id="listbox" style="overflow:auto" 
+				selectedIndex="@bind(vm.selected)" width="max" height="max">
 				<listhead>
-					<listheader label="#" align="center" sort="true" />
+					<listheader label="#" align="center" sort="true" hflex="min"/>
 					<listheader label="Start" align="center"
-						sort="true" />
-					<listheader label="End" align="center" sort="true" />
+						sort="true" hflex="min" />
+					<listheader label="End" align="center" sort="true" hflex="min"/>
 					<listheader label="Frame" align="center"
-						sort="true" />
+						sort="true" hflex="min" />
 					<listheader label="Sense" align="center"
-						sort="true" />
+						sort="true" hflex="min"/>
 					<listheader label="Length" align="center"
-						sort="true" />
+						sort="true" hflex="min"/>
 					<listheader label="Nucleotide Sequence"
-						align="center" sort="true" />
+						align="left" sort="true" />
 					<listheader label="Amino Acid Sequence"
-						align="center" sort="true" />
+						align="left" sort="true" />
 				</listhead>
 				<template name="model" var="item">
 					<listitem value="@bind(item)">
-						<listcell label="${forEachStatus.index}" ;
-							<listcell label="@bind(orfs.startPos)" />
-							<listcell label="@bind(orfs.endPos)" />
-							<listcell label="@bind(orfs.frameNum)" />
-							<listcell label="@bind(orfs.sense)" />
-							<listcell label="@bind(orfs.seqLength)" />
-							<listcell label="@bind(orfs.nucSequence)" />
-							<listcell label="@bind(orfs.aaSequence)" />
+						<listcell label="@load(itemStatus.index+1)" />
+						<listcell label="@load(item.startPos)" />
+						<listcell label="@load(item.endPos)" />
+						<listcell label="@load(item.frameNum)" />
+						<listcell label="@load(item.sense)" />
+						<listcell label="@load(item.seqLength)" />
+						<listcell label="@load(item.nucSequence)"  tooltiptext="@load(item.nucSequence)"/>
+						<listcell label="@load(item.aaSequence)"  tooltiptext="load(item.aaSequence)"/>
 					</listitem>
 				</template>
 			</listbox>

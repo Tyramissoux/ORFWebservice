@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -49,9 +48,8 @@ public class UploadVM {
 	private Selectbox select;
 
 	private ListModelList<String> model;
-
-	private Pattern pattern;
-	private Matcher matcher;
+	private ArrayList<Entry> list;
+	
 
 
 	public ListModelList<String> getModel() {
@@ -68,11 +66,10 @@ public class UploadVM {
 		model = new ListModelList<String>(getModelType());
 	}
 
-	@SuppressWarnings("static-access")
+	
 	@Command
 	public void start() {
-		pattern = pattern.compile("[atgcuryswkmbdhvn.-]+",
-				Pattern.CASE_INSENSITIVE); // ambiguity code included
+
 		String text = txt.getValue();
 		if (text == null || text.length() == 0) {
 			Messagebox.show("No textbox input ", "Warning", Messagebox.OK,
@@ -82,16 +79,14 @@ public class UploadVM {
 		String[] lines = text.split("\n");
 		if (lines.length > 2) {
 			Messagebox
-					.show("Textbox input malformed - no linebreaks inside the sequence and not more than one (FASTA) sequence",
+					.show("Textbox input malformed - no linebreaks inside the sequence and not more than one (FASTA) sequence allowed",
 							"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			return;
 		}
 		Entry e = new Entry();
 		try {
 			for (int i = 0; i < lines.length; i++) {
-
-				pattern.matcher(lines[i]);
-				if (matcher.find()) {
+				if (Pattern.matches("[atgcuryswkmbdhvn.-]+", lines[i].toLowerCase())) {
 					e.setSequence(lines[i].toLowerCase());
 					continue;
 				}
@@ -99,21 +94,24 @@ public class UploadVM {
 					e.setHeader(lines[i]);
 				}
 			}
-			if (e.getSequence().equals("")) {
+			if (e.getSequence()==null || e.getSequence().equals("")) {
 				Messagebox.show(
-						"No matching sequence found - try again, please",
+						"No nucleotide sequence found - try again, please",
 						"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 				return;
 			}
-			ArrayList<Entry> list = new ArrayList<Entry>();
+			list = new ArrayList<Entry>();
 			list.add(e);
-			Sessions.getCurrent().setAttribute("listOfEntries", list);
+			setListGlobal();
 			getChosenValues();
 			redirect();
 		} catch (Exception ex) {
 			ExceptionLogger.writeSevereError(ex);
 		}
-
+	}
+	
+	private void setListGlobal(){
+		Sessions.getCurrent().setAttribute("listOfEntries", list);
 	}
 
 	private File createFolder() {
@@ -173,8 +171,8 @@ public class UploadVM {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 			Files.copy(writer, media.getReaderData());
 
-			ArrayList<Entry> list = new FastaReader(filePath).getEntryList();
-			Sessions.getCurrent().setAttribute("listOfEntries", list);
+			list = new FastaReader(filePath).getEntryList();
+			setListGlobal();
 			getChosenValues();
 			Clients.clearBusy();
 			redirect();
@@ -189,7 +187,7 @@ public class UploadVM {
 	}
 	
 	private void getChosenValues() {
-		Sessions.getCurrent().setAttribute("multiStart", rEuca.isChecked());
+		Sessions.getCurrent().setAttribute("multiStart", !rEuca.isChecked());
 		int chosenLen = 0;
 		switch (select.getSelectedIndex()) {
 		case 0:

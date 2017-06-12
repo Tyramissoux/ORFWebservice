@@ -62,6 +62,10 @@ public class ORF {
 		return aaSeq.length();
 	}
 	
+	public int getFrameNum(){
+		return frame;
+	}
+	
 	public String getNucSequence(){
 		return nucSeq.toString();
 	}

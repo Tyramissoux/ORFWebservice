@@ -3,7 +3,7 @@ package vm;
 import java.util.ArrayList;
 import java.util.List;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.ListModelList;
@@ -24,16 +24,19 @@ public class OutputVM {
 	private boolean multipleStartCodons;
 	private ListModelList<String> model;
 	private String header;
+	private int selected;
 
-	@Init
-	public void init() {
+	
+	public OutputVM(){
 		getSessionGlobals();
 		fillSelectBox();
-		if(allEntries.size()==1)select.setVisible(false);
+		//if(allEntries.size()==1)select.setVisible(false);
 		entryToOrfList(0);
 	}
 	
+	
 	@Command
+	@NotifyChange("header")
 	public void changeModel(){
 		entryToOrfList(select.getSelectedIndex());
 		setHeader();
@@ -66,6 +69,7 @@ public class OutputVM {
 		String currentEntry = allEntries.get(entryNum).getSequence();
 		orfs = new ORFanalyzer(currentEntry, minSeqLen, multipleStartCodons)
 				.getORFlist();
+		System.out.println();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,7 +79,14 @@ public class OutputVM {
 		multipleStartCodons = (boolean) Sessions.getCurrent().getAttribute(
 				"multiStart");
 		minSeqLen = (int) Sessions.getCurrent().getAttribute("minSeqLength");
-		// "multiStart"
+	}
+	
+	public void setSelected(int selected) {
+		this.selected = selected;
+	}
+
+	public int getSelected() {
+		return selected;
 	}
 
 	public ListModelList<String> getModel() {

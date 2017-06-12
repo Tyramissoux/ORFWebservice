@@ -6,36 +6,39 @@
 		<hbox>
 			<vbox>
 				<hbox>
-					<label value="Choose file: " />
+					<label id="lbl" value="Choose file: " />
 					<space />
 					<button label="Upload" id="btnUpload"
 						onUpload="@command('uploadFile')" upload="true,multiple=false" />
 				</hbox>
 				<hbox>
-					<textbox id="txtUpload" height="300" width="400"
-						multiline="true" hflex="max" vflex="max">
+				<vbox>
+						<label value="Enter sequence:" />
+					<textbox id="txtUpload" height="300px" width="400px"
+						multiline="true"  >
 						<attribute name="onChanging">
 	if (event.getValue().length() > 30) {
 		btnGo.setVisible(true);
 		btnUpload.setVisible(false);
+		lbl.setVisible(false);
+		
 	} else {
 		btnGo.setVisible(false);
 		btnUpload.setVisible(true);
+		lbl.setVisible(true);
 	}
 </attribute>
 					</textbox>
-					<vbox>
-						<label value="Enter sequence:" />
-						<button label="Start"
-							onClick="@command('start')" id="btnGo" visible="false" />
 					</vbox>
+					<button label="Start"
+							onClick="@command('start')" id="btnGo" visible="false" />
 				</hbox>
 
 			</vbox>
 			<vbox>
 				<hbox>
 					<label value="Min. nucleotide sequence length:" />
-					<selectbox model="@bind(vm.model)" selectedIndex="0"
+					<selectbox model="@bind(vm.model)" 
 						id="selBox">
 						<template name="model">
 							<label value="${each}" />
@@ -45,7 +48,7 @@
 				<hbox>
 					<label value="Stopcodons:" />
 					<vbox>
-						<radiogroup id="rGroup">
+						<radiogroup id="rGroup" orient="vertical">
 							<radio id="rEuca" label="eucaryotic: atg"
 								checked="true" />
 							<radio id="rProca"
