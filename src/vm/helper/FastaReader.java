@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import orf.Entry;
 import security.ExceptionLogger;
 
@@ -79,14 +81,19 @@ public class FastaReader {
 	 */
 	private void digestEntry(String line) {
 		String[] splitByNewline = line.split("\n");  
-
+		if(splitByNewline.length==1){
+			list.add(new Entry("",""));
+			return;
+		}
 		String seq;
 		if (splitByNewline.length > 2)
 			seq = buildSequence(splitByNewline).replaceAll("\n", "");
 		else
 			seq = splitByNewline[1];
-
+		
+		if(Pattern.matches("[atgcuryswkmbdhvn.-]+",seq.toLowerCase()))
 		list.add(new Entry(splitByNewline[0], seq));
+		else list.add(new Entry("",""));
 	}
 
 }

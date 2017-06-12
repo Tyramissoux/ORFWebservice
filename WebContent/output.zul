@@ -6,29 +6,33 @@
 
 	<window id="win" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('vm.OutputVM')" border="normal">
+		<vbox>
 		<hbox>
 			<selectbox model="@bind(vm.model)" selectedIndex="0"
-				id="selBox" onSelect="@Command('changeModel')">
+				id="selBox">
 				<template name="model">
 					<label value="${each}" />
 				</template>
 			</selectbox>
+			<button id="btnGo" label="switch" onClick="@command('switchEntry')"/>
+			<button id="diagrams" label="Show diagrams" onClick="@command('showDiag')"
+			</hbox>
 			<label value="@load(vm.header)" />
-		</hbox>
+		</vbox>
 		<hbox>
 			<listbox model="@load(vm.orfs)" id="listbox" style="overflow:auto" 
 				selectedIndex="@bind(vm.selected)" width="max" height="max">
 				<listhead>
-					<listheader label="#" align="center" sort="true" hflex="min"/>
+					<listheader label="#" align="center" hflex="min" sort="auto"/>
 					<listheader label="Start" align="center"
-						sort="true" hflex="min" />
-					<listheader label="End" align="center" sort="true" hflex="min"/>
+						sort="auto(startPos)" hflex="min" />
+					<listheader label="End" align="center" sort="auto(endPos)" hflex="min"/>
 					<listheader label="Frame" align="center"
-						sort="true" hflex="min" />
+						sort="auto(frameNum)" hflex="min" />
 					<listheader label="Sense" align="center"
-						sort="true" hflex="min"/>
+						sort="auto(sense)" hflex="min"/>
 					<listheader label="Length" align="center"
-						sort="true" hflex="min"/>
+						sort="auto(seqLength)" hflex="min"/>
 					<listheader label="Nucleotide Sequence"
 						align="left" sort="true" />
 					<listheader label="Amino Acid Sequence"

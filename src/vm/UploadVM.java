@@ -175,6 +175,8 @@ public class UploadVM {
 			Clients.clearBusy();
 			redirect();
 		} catch (Exception e) {
+			Messagebox.show("Uploaded file is not a textfile",
+					"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			ExceptionLogger.writeSevereError(e);
 			return;
 		}

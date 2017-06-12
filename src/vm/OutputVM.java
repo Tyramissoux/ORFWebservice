@@ -2,10 +2,18 @@ package vm;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Selectbox;
@@ -27,34 +35,44 @@ public class OutputVM {
 	private String header;
 	private int selected;
 
-	
-	public OutputVM(){
+	public OutputVM() {
 		getSessionGlobals();
 		fillSelectBox();
-		//if(allEntries.size()==1)select.setVisible(false);
+		// if(allEntries.size()==1)select.setVisible(false);
 		entryToOrfList(0);
-		if(orfs.size()==0){
-			orfs.add(new ORF(0,'0'));
-			Messagebox.show("No ORFs were found for '"+header+"' with a min. sequence length of "+minSeqLen,
+		if (orfs.size() == 0) {
+			orfs.add(new ORF(0, '0'));
+			Messagebox.show("No ORFs were found for '" + header
+					+ "' with a min. sequence length of " + minSeqLen,
 					"Information", Messagebox.OK, Messagebox.EXCLAMATION);
 		}
 	}
-	
-	
-	@Command
-	@NotifyChange("header")
-	public void changeModel(){
-		entryToOrfList(select.getSelectedIndex());
-		setHeader();
+
+	@AfterCompose
+	public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
+		Selectors.wireComponents(view, this, false);
 	}
-	
-	public String getHeader(){
+
+	@Command
+	@NotifyChange("{header , orfs}")
+	public void switchEntry() {
+		Clients.showBusy("Preparing data...");
+		int index = select.getSelectedIndex();
+		entryToOrfList(index);
+		setHeader();
+		BindUtils.postNotifyChange(null, null, OutputVM.this, "orfs");
+		Clients.clearBusy();
+
+	}
+
+	public String getHeader() {
 		return header;
 	}
-	
-	private void setHeader(){
+
+	private void setHeader() {
 		header = allEntries.get(select.getSelectedIndex()).getHeader();
-		if(header.equals("")) header = "Entry "+(select.getSelectedIndex()+1);
+		if (header.equals(""))
+			header = "Entry " + (select.getSelectedIndex() + 1);
 	}
 
 	private void fillSelectBox() {
@@ -63,18 +81,21 @@ public class OutputVM {
 			String header = allEntries.get(i).getHeader();
 			if (header.equals(""))
 				header = "Entry " + (i + 1);
-			else if (header.length() > 30)
-				header = header.substring(0, 30) + "...";
 			list.add(header);
 		}
 		model = new ListModelList<String>(list);
 	}
 
-
+	@NotifyChange("orfs")
 	private void entryToOrfList(int entryNum) {
 		String currentEntry = allEntries.get(entryNum).getSequence();
-		orfs = new ORFanalyzer(currentEntry, minSeqLen, multipleStartCodons)
-				.getORFlist();
+		if (!currentEntry.equals(""))
+			orfs = new ORFanalyzer(currentEntry, minSeqLen, multipleStartCodons)
+					.getORFlist();
+		else {
+			Messagebox.show("No nucleotide sequence was found", "Information",
+					Messagebox.OK, Messagebox.EXCLAMATION);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,7 +106,7 @@ public class OutputVM {
 				"multiStart");
 		minSeqLen = (int) Sessions.getCurrent().getAttribute("minSeqLength");
 	}
-	
+
 	public void setSelected(int selected) {
 		this.selected = selected;
 	}
