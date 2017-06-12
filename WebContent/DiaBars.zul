@@ -1,0 +1,8 @@
+<?page title="Sequences Per Frame" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window apply="vm.diagrams.ColumnBasicComposer" title="Sequences Per Frame" border="normal">
+    <charts id="chart" type="column"
+        title="Amount of sequences per open reading frame"
+        />
+</window>
+</zk>

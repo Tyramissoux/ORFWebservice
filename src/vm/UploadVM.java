@@ -159,16 +159,18 @@ public class UploadVM {
 			return;
 		}
 		Clients.showBusy("Preparing data...");
+
+		Media media = upEvent.getMedia();
+		String filePath = checkUploadedFile(media);
+		if (filePath == null)
+			return;
 		try {
+			if (!copyFile(filePath, media)) {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(
+						filePath));
 
-			Media media = upEvent.getMedia();
-			String filePath = checkUploadedFile(media);
-			if (filePath == null)
-				return;
-
-			//BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-			Files.copy(new File(filePath),media.getStreamData());
-
+				Files.copy(writer, media.getReaderData());
+			}
 			list = new FastaReader(filePath).getEntryList();
 			setListGlobal();
 			getChosenValues();
@@ -176,10 +178,19 @@ public class UploadVM {
 			redirect();
 		} catch (Exception e) {
 			Clients.clearBusy();
-			Messagebox.show("Uploaded file is not a textfile",
-					"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+			Messagebox.show("Upload failed - try again, please", "Warning",
+					Messagebox.OK, Messagebox.EXCLAMATION);
 			ExceptionLogger.writeSevereError(e);
 			return;
+		}
+	}
+
+	private boolean copyFile(String path, Media media) {
+		try {
+			Files.copy(new File(path), media.getStreamData());
+			return true;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 
@@ -236,12 +247,11 @@ public class UploadVM {
 		String filePath = saveFolder.getAbsolutePath() + File.separatorChar
 				+ originalName;
 
-		/*if (media.isBinary()) {
-			Clients.clearBusy();
-			Messagebox.show("Chosen file is not a text based FASTA file",
-					"Warning", Messagebox.OK, Messagebox.EXCLAMATION);
-			return null;
-		}*/
+		/*
+		 * if (media.isBinary()) { Clients.clearBusy();
+		 * Messagebox.show("Chosen file is not a text based FASTA file",
+		 * "Warning", Messagebox.OK, Messagebox.EXCLAMATION); return null; }
+		 */
 		return filePath;
 	}
 

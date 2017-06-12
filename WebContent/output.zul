@@ -16,12 +16,13 @@
 			</selectbox>
 			<button id="btnGo" label="switch" onClick="@command('switchEntry')"/>
 			<button id="diagrams" label="Show diagrams" onClick="@command('showDiags')"/>
+			<button id="excel" label="Save as *.xlsx" onClick="@command('saveAsExcel')"/>
 			</hbox>
 			<label value="@load(vm.header)" />
 		</vbox>
 		<hbox>
 			<listbox model="@load(vm.orfs)" id="listbox" style="overflow:auto" 
-				selectedIndex="@bind(vm.selected)" width="max" height="max">
+				selectedIndex="@bind(vm.selected)" width="max" height="max" rows="20">
 				<listhead>
 					<listheader label="#" align="center" hflex="min" sort="auto"/>
 					<listheader label="Start" align="center"
@@ -39,8 +40,8 @@
 						align="left" sort="true" />
 				</listhead>
 				<template name="model" var="item">
-					<listitem value="@bind(item)">
-						<listcell label="@load(itemStatus.index+1)" />
+					<listitem value="@bind(item)" >
+						<listcell><button label="@load(itemStatus.index+1)" onClick="@command('openNCBI')"/></listcell>
 						<listcell label="@load(item.startPos)" />
 						<listcell label="@load(item.endPos)" />
 						<listcell label="@load(item.frameNum)" />

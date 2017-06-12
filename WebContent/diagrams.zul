@@ -1,0 +1,16 @@
+<?page title="Open Reading Frame Analysis - Output" contentType="text/html;charset=UTF-8"?>
+
+
+<zk xmlns:n="native" xmlns:c="client">
+
+
+	<window id="win" border="normal">
+	<vbox>
+	<include src="DiaBars.zul" hflex="100%" vflex="45%" progressing="true"  mode="defer"/>
+	<separator></separator>
+	<include src="DiaColumnRange.zul" hflex="100%" vflex="45%"  progressing="true"  mode="defer"/>
+	</vbox>
+	</window>
+
+
+</zk>

@@ -6,7 +6,12 @@
 		hflex="max" position="center">
 		<hbox>
 			<hbox>
-				<label value="Enter sequence:" />
+				<vbox>
+					<label value="Enter sequence:" />
+					<image id="questionmark"
+						src="Files/QuestionmarkButton.png" tooltip="upload"
+						style="cursor: help" />
+				</vbox>
 				<textbox id="txtUpload" height="300px" width="400px"
 					multiline="true"
 					tooltiptext="Enter a nucleotide sequence of min. length 30 nt ">
@@ -26,9 +31,7 @@
 				<vbox>
 					<button label="Start" onClick="@command('start')"
 						id="btnGo" visible="false" />
-					<image id="questionmark"
-						src="Files/QuestionmarkButton.png" tooltip="upload"
-						style="cursor: help" />
+
 				</vbox>
 			</hbox>
 
@@ -62,13 +65,14 @@
 				<space height="50px" />
 				<button label="Upload" id="btnUpload"
 					onUpload="@command('uploadFile')"
-					upload="true,multiple=false,accept=.fa" />
+					upload="true,multiple=false" />
 
 			</div>
 		</hbox>
 	</window>
 	<popup id="upload" width="300px">
 		<html>
+
 
 
 
@@ -85,10 +89,12 @@
 			
 			
 			
+			
 		</html>
 	</popup>
 	<popup id="select" width="300px">
 		<html>
+
 
 
 
@@ -102,6 +108,7 @@
 			<br><br><br>Make sure to select the desired nucleotide
 			sequence length before uploading a file as the upload will
 			start immediately after finishing the upload dialog.]]>
+			
 			
 			
 			

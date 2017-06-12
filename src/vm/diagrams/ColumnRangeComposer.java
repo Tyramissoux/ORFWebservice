@@ -26,9 +26,9 @@ public class ColumnRangeComposer extends SelectorComposer<Window> {
 
         DataLabels dataLabels = chart.getPlotOptions().getColumnRange().getDataLabels();
         dataLabels.setEnabled(true);
-        Entry entry = (Entry) Sessions.getCurrent().getAttribute("entry");
-        
         chart.getLegend().setEnabled(false);
+        
+        Entry entry = (Entry) Sessions.getCurrent().getAttribute("entry");
         chart.setSubtitle(entry.getHeader());
     }
 }
