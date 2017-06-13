@@ -3,8 +3,8 @@
 
 <zk xmlns:n="native" xmlns:c="client">
 
-	<include src="DiaColumnRange.zul" hflex="100%" vflex="45%"  progressing="true"  mode="defer"/>
-	<include src="DiaBars.zul" hflex="100%" vflex="45%" progressing="true"  mode="defer"/>
+	<include src="DiaColumnRange.zul"  progressing="true"  mode="defer"/>
+	<include src="DiaBars.zul"  progressing="true"  mode="defer"/>
 
 
 </zk>

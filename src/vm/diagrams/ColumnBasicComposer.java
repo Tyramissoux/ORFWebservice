@@ -25,7 +25,7 @@ public class ColumnBasicComposer extends SelectorComposer<Window> {
         
         chart.getYAxis().setMin(0);
         chart.getYAxis().getTitle().setText("Number of sequences");
-        chart.getXAxis().getTitle().setText("Frames");
+        chart.getXAxis().getTitle().setText("Frame number and sense");
         
         Tooltip tooltip = chart.getTooltip();
         tooltip.setHeaderFormat("<span style=\"font-size:10px\">{point.key}</span><table>");
