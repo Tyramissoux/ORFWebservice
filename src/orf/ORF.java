@@ -5,6 +5,7 @@ public class ORF {
 	int startPos;
 	int endPos;
 	int aaLen;
+	double gcContent;
 
 	StringBuilder nucSeq;
 	StringBuilder aaSeq;
@@ -17,7 +18,12 @@ public class ORF {
 		this.sense = sense;
 
 	}
-
+	
+	public double getGcContent(){
+		if(gcContent == 0) gcContent = calculateGCContent();
+		return gcContent;
+	}
+	
 	public double calculateGCContent(){
 		String seq = getNucSequence();
 		int counter = 0;

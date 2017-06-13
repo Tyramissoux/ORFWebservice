@@ -3,14 +3,8 @@
 
 <zk xmlns:n="native" xmlns:c="client">
 
-
-	<window id="win" border="normal">
-	<vbox>
-	<include src="DiaBars.zul" hflex="100%" vflex="45%" progressing="true"  mode="defer"/>
-	<separator></separator>
 	<include src="DiaColumnRange.zul" hflex="100%" vflex="45%"  progressing="true"  mode="defer"/>
-	</vbox>
-	</window>
+	<include src="DiaBars.zul" hflex="100%" vflex="45%" progressing="true"  mode="defer"/>
 
 
 </zk>

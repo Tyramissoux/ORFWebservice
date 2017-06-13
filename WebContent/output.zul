@@ -34,6 +34,8 @@
 						sort="auto(sense)" hflex="min"/>
 					<listheader label="Length" align="center"
 						sort="auto(seqLength)" hflex="min"/>
+						<listheader label="GC content" align="center"
+						sort="auto(gcContent)" hflex="min"/>
 					<listheader label="Nucleotide Sequence"
 						align="left" sort="true" />
 					<listheader label="Amino Acid Sequence"
@@ -47,6 +49,7 @@
 						<listcell label="@load(item.frameNum)" />
 						<listcell label="@load(item.sense)" />
 						<listcell label="@load(item.seqLength)" />
+						<listcell label="@load(item.gcContent)" />
 						<listcell label="@load(item.nucSequence)"  tooltiptext="@load(item.nucSequence)"/>
 						<listcell label="@load(item.aaSequence)"  tooltiptext="@load(item.aaSequence)"/>
 					</listitem>

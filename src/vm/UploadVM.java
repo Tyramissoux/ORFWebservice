@@ -100,7 +100,7 @@ public class UploadVM {
 			}
 			list = new ArrayList<Entry>();
 			list.add(e);
-			setListGlobal();
+			setVariablesGlobal(null);
 			getChosenValues();
 			redirect();
 		} catch (Exception ex) {
@@ -108,7 +108,8 @@ public class UploadVM {
 		}
 	}
 
-	private void setListGlobal() {
+	private void setVariablesGlobal(String filePath) {
+		Sessions.getCurrent().setAttribute("uploadedFile", filePath);
 		Sessions.getCurrent().setAttribute("listOfEntries", list);
 	}
 
@@ -172,7 +173,7 @@ public class UploadVM {
 				Files.copy(writer, media.getReaderData());
 			}
 			list = new FastaReader(filePath).getEntryList();
-			setListGlobal();
+			setVariablesGlobal(filePath);
 			getChosenValues();
 			Clients.clearBusy();
 			redirect();

@@ -1,8 +1,14 @@
 package vm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.MimetypesFileTypeMap;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
@@ -12,13 +18,11 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Selectbox;
@@ -26,6 +30,8 @@ import org.zkoss.zul.Selectbox;
 import orf.Entry;
 import orf.ORF;
 import orf.ORFanalyzer;
+import security.ExceptionLogger;
+import vm.helper.ExcelSaver;
 
 public class OutputVM {
 
@@ -106,29 +112,66 @@ public class OutputVM {
 		}
 	}
 
-	@Command 
-	public void saveAsExcel(){
-		
-	}
-	
 	@Command
-	public void openNCBI(@ContextParam(ContextType.COMPONENT) Component component){
+	public void saveAsExcel() {
+		String filePath = (String) Sessions.getCurrent().getAttribute(
+				"uploadedFile");
+		filePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".xlsx";
+		Clients.showBusy("Preparing download...");
+		new ExcelSaver(filePath, allEntries, minSeqLen, multipleStartCodons);
+
+		Clients.clearBusy();
+
+		if (!tryDownload(filePath))
+			Messagebox.show("Excel file couldn't be downloaded", "Information",
+					Messagebox.OK, Messagebox.EXCLAMATION);
+	}
+
+	/*
+	 * private boolean checkFile(String filePath) { File f = new File(filePath);
+	 * 
+	 * if (!f.exists()) { try {
+	 * 
+	 * } catch (InterruptedException e) { ExceptionLogger.writeSevereError(e); }
+	 * } else return true;
+	 * 
+	 * return false; }
+	 */
+
+	private boolean tryDownload(String filePath) {
+		try {
+			File f = new File(filePath);
+			if (f.exists()) {
+				FileInputStream fs = new FileInputStream(f);
+				Filedownload.save(fs, new MimetypesFileTypeMap().getContentType(f),f.getName());
+				return true;
+			}
+			else return false;
+		} catch (FileNotFoundException e) {
+			ExceptionLogger.writeSevereError(e);
+			return false;
+		}
+	}
+
+	@Command
+	public void openNCBI(
+			@ContextParam(ContextType.COMPONENT) Component component) {
 		Listitem li = (Listitem) component.getParent().getParent();
-		String seq =orfs.get(li.getIndex()).getNucSequence();
-		//https://blast.ncbi.nlm.nih.gov/Blast.cgi?QUERY=atgaaaaacccaaaaaagaaatccggaggattccggattgtcaatatgctaaaacgcggagtagcccgtgtgagcccctttgggggcttgaagaggctgccagccggacttctgctgggtcatgggcccatcaggatggtcttggcgattctagccttttt&DATABASE=nt&PROGRAM=blastn&CMD=Put
-		Executions.getCurrent().sendRedirect("https://blast.ncbi.nlm.nih.gov/Blast.cgi?QUERY="+seq+"&DATABASE=nt&PROGRAM=blastn&CMD=Put","_blank");
-		
-		
+		String seq = orfs.get(li.getIndex()).getNucSequence();
+		// https://blast.ncbi.nlm.nih.gov/Blast.cgi?QUERY=atgaaaaacccaaaaaagaaatccggaggattccggattgtcaatatgctaaaacgcggagtagcccgtgtgagcccctttgggggcttgaagaggctgccagccggacttctgctgggtcatgggcccatcaggatggtcttggcgattctagccttttt&DATABASE=nt&PROGRAM=blastn&CMD=Put
+		Executions.getCurrent().sendRedirect(
+				"https://blast.ncbi.nlm.nih.gov/Blast.cgi?QUERY=" + seq
+						+ "&DATABASE=nt&PROGRAM=blastn&CMD=Put", "_blank");
+
 	}
-	
+
 	@Command
-	public void showDiags(){
+	public void showDiags() {
 		Sessions.getCurrent().setAttribute("orfList", orfs);
 		Sessions.getCurrent().setAttribute("entry", currentEntry);
-		Executions.getCurrent().sendRedirect("diagrams.zul");
+		Executions.getCurrent().sendRedirect("diagrams.zul", "_blank");
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	private void getSessionGlobals() {
 		allEntries = (ArrayList<Entry>) Sessions.getCurrent().getAttribute(
