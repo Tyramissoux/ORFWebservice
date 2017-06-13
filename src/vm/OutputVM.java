@@ -3,12 +3,10 @@ package vm;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.activation.MimetypesFileTypeMap;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
@@ -46,10 +44,13 @@ public class OutputVM {
 	private String header;
 	private int selected;
 	private Entry currentEntry;
+	private String average;
+	DecimalFormat df; 
 
 	public OutputVM() {
 		getSessionGlobals();
 		fillSelectBox();
+		df = new DecimalFormat("#.00"); 
 		// if(allEntries.size()==1)select.setVisible(false);
 		entryToOrfList(0);
 		currentEntry = allEntries.get(0);
@@ -76,9 +77,20 @@ public class OutputVM {
 		setHeader();
 		BindUtils.postNotifyChange(null, null, OutputVM.this, "orfs");
 		Clients.clearBusy();
-
+	}
+	
+	private String calculateAverage(){
+		int val = 0;
+		for(ORF o : orfs)
+			val += o.getSeqLength();
+		double av= (double)val/(double)orfs.size();
+		return df.format(av);
 	}
 
+	public String getAverage(){
+		return average;
+	}
+	
 	public String getHeader() {
 		return header;
 	}
@@ -100,7 +112,7 @@ public class OutputVM {
 		model = new ListModelList<String>(list);
 	}
 
-	@NotifyChange("orfs")
+	@NotifyChange({"orfs","average"})
 	private void entryToOrfList(int entryNum) {
 		String currentEntry = allEntries.get(entryNum).getSequence();
 		if (!currentEntry.equals(""))
@@ -110,6 +122,8 @@ public class OutputVM {
 			Messagebox.show("No nucleotide sequence was found", "Information",
 					Messagebox.OK, Messagebox.EXCLAMATION);
 		}
+		average = calculateAverage() +" nt ";
+		BindUtils.postNotifyChange(null, null, OutputVM.this, "average");
 	}
 
 	@Command

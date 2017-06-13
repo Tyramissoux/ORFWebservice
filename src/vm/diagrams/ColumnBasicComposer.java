@@ -30,7 +30,7 @@ public class ColumnBasicComposer extends SelectorComposer<Window> {
         Tooltip tooltip = chart.getTooltip();
         tooltip.setHeaderFormat("<span style=\"font-size:10px\">{point.key}</span><table>");
         tooltip.setPointFormat("<tr><td style=\"color:{series.color};padding:0\">{series.name}: </td>"
-            + "<td style=\"padding:0\"><b>{point.y:.1f} mm</b></td></tr>");
+            + "<td style=\"padding:0\"><b>{point.y:.1f}</b></td></tr>");
         tooltip.setFooterFormat("</table>");
         tooltip.setShared(true);
         tooltip.setUseHTML(true);

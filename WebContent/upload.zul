@@ -2,8 +2,8 @@
 <zk>
 	<window title="ORFfinder Upload" border="normal"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('vm.UploadVM')" vflex="max" sizable="true"
-		hflex="max" position="center">
+		viewModel="@id('vm') @init('vm.UploadVM')" vflex="min" sizable="true"
+		hflex="min" position="center">
 		<hbox>
 			<hbox>
 				<vbox>

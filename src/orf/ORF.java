@@ -1,11 +1,15 @@
 package orf;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class ORF {
 	int frame;
 	int startPos;
 	int endPos;
 	int aaLen;
 	double gcContent;
+	DecimalFormat df;
 
 	StringBuilder nucSeq;
 	StringBuilder aaSeq;
@@ -16,12 +20,17 @@ public class ORF {
 		aaSeq = new StringBuilder();
 		this.frame = frame;
 		this.sense = sense;
+		df = new DecimalFormat("#.00"); 
 
 	}
 	
 	public double getGcContent(){
 		if(gcContent == 0) gcContent = calculateGCContent();
 		return gcContent;
+	}
+	
+	public String getGcCon(){
+		return df.format((getGcContent()*100));
 	}
 	
 	public double calculateGCContent(){

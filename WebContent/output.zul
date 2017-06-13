@@ -16,10 +16,12 @@
 						</template>
 					</selectbox>
 					<button id="btnGo" label="switch"
-						onClick="@command('switchEntry')" />
-					<image id="questionmark"
+						onClick="@command('switchEntry')" /><image id="questionmark"
 						src="Files/QuestionmarkButton.png" tooltip="selectbox"
 						style="cursor: help" />
+						<label value="av. sequence length: "/>
+						<label id="lblAv" value="@load(vm.average)"/>
+					
 				</div>
 				<div align="right">
 					<button id="diagrams" label="Show diagrams"
@@ -68,7 +70,7 @@
 						<listcell label="@load(item.frameNum)" />
 						<listcell label="@load(item.sense)" />
 						<listcell label="@load(item.seqLength)" />
-						<listcell label="@load(item.gcContent)" />
+						<listcell label="@load(item.gcCon)" />
 						<listcell label="@load(item.nucSequence)"
 							tooltiptext="@load(item.nucSequence)" />
 						<listcell label="@load(item.aaSequence)"
