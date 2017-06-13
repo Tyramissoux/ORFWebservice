@@ -1,12 +1,4 @@
 <zk xmlns:n="native" xmlns:c="client">
 	<?page title="ORFfinder"?>
-	<window id="ORFfinder" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('view') @init('vm.BackEndHandler')">
-
-		<textbox width="500px" height="200px"
-			value="@bind(view.inputText)" multiline="true"
-			constraint="no empty: please enter nucleotide sequence" />
-		<button label="go" />
-		
-	</window>
+<?forward uri="/upload.zul" ?>
 </zk>
